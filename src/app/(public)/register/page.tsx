@@ -59,22 +59,22 @@ export default function RegisterPage() {
       </Typography>
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <Input
-          label="Email"
-          type="email"
-          placeholder="you@example.com"
-          error={errors.email?.message}
-          {...rhf("email")}
-        />
-        <Input
           label="name"
-          placeholder="johndoe"
+          placeholder="Enter your name"
           error={errors.name?.message}
           {...rhf("name")}
         />
         <Input
+          label="Email"
+          type="email"
+          placeholder="Enter your email"
+          error={errors.email?.message}
+          {...rhf("email")}
+        />
+        <Input
           label="Password"
           type={showPassword ? "text" : "password"}
-          placeholder="••••••••"
+          placeholder="Type your password"
           error={errors.password?.message}
           trailingIcon={
             <button
@@ -94,7 +94,7 @@ export default function RegisterPage() {
         <Input
           label="Confirm Password"
           type={showConfirm ? "text" : "password"}
-          placeholder="••••••••"
+          placeholder="Confirm your password"
           error={errors.confirmPassword?.message}
           trailingIcon={
             <button
