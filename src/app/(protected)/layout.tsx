@@ -1,6 +1,5 @@
 import { auth } from "@/auth";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
-import { Navbar } from "@/components/layout/Navbar";
 import { redirect } from "next/navigation";
 
 export default async function ProtectedLayout({
@@ -12,9 +11,8 @@ export default async function ProtectedLayout({
   if (!session) redirect("/login");
 
   return (
-    <div className="min-h-screen flex flex-col bg-background">
-      <Navbar />
-      <main className="flex-1 flex flex-col">
+    <div className="h-screen flex flex-col bg-background">
+      <main className="flex-1 flex flex-col overflow-hidden">
         <ErrorBoundary>{children}</ErrorBoundary>
       </main>
     </div>

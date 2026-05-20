@@ -56,12 +56,15 @@ export default function ChatSessionPage() {
       </Sheet>
 
       <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <div className="flex items-center px-4 py-2 border-b border-border lg:hidden">
+        <div className="flex items-center gap-3 px-4 h-12 border-b border-border lg:hidden">
           <IconButton
             icon={<Menu className="w-4 h-4" />}
             aria-label="Open sidebar"
             onClick={() => dispatch(setSidebarOpen(true))}
           />
+          <span className="text-sm font-bold text-foreground tracking-tight">
+            MADRL Portfolio
+          </span>
         </div>
         <StatusBar />
         <ResearchPanel />

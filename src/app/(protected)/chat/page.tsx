@@ -1,28 +1,25 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
+import { ChatInput } from "@/components/chat/ChatInput";
+import { ChatSidebar } from "@/components/chat/ChatSidebar";
+import { ResearchPanel } from "@/components/chat/ResearchPanel";
+import { StatusBar } from "@/components/chat/StatusBar";
+import { IconButton } from "@/components/ui/IconButton";
+import { Sheet } from "@/components/ui/Sheet";
+import { useStreamingChat } from "@/hooks/useStreamingChat";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { setActiveSession, startStreaming } from "@/store/slices/chatSlice";
-import { useStreamingChat } from "@/hooks/useStreamingChat";
-import { ChatSidebar } from "@/components/chat/ChatSidebar";
-import { ChatInput } from "@/components/chat/ChatInput";
-import { StatusBar } from "@/components/chat/StatusBar";
-import { ResearchPanel } from "@/components/chat/ResearchPanel";
-import { PortfolioPanel } from "@/components/chat/PortfolioPanel";
-import { Sheet } from "@/components/ui/Sheet";
-import { useAppSelector as useSelector } from "@/store/hooks";
 import { setSidebarOpen } from "@/store/slices/uiSlice";
-import { MessageSquare } from "lucide-react";
-import { IconButton } from "@/components/ui/IconButton";
-import { Menu } from "lucide-react";
+import { Menu, MessageSquare } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function ChatPage() {
   const router = useRouter();
   const { data: session } = useSession();
   const dispatch = useAppDispatch();
   const { isStreaming } = useAppSelector((s) => s.chat);
-  const sidebarOpen = useSelector((s) => s.ui.sidebarOpen);
+  const sidebarOpen = useAppSelector((s) => s.ui.sidebarOpen);
   const { stream, stop } = useStreamingChat();
 
   const handleSubmit = async (message: string) => {
@@ -44,12 +41,15 @@ export default function ChatPage() {
       </Sheet>
 
       <div className="flex-1 flex flex-col overflow-hidden">
-        <div className="flex items-center px-4 py-2 border-b border-border lg:hidden">
+        <div className="flex items-center gap-3 px-4 h-12 border-b border-border lg:hidden">
           <IconButton
             icon={<Menu className="w-4 h-4" />}
             aria-label="Open sidebar"
             onClick={() => dispatch(setSidebarOpen(true))}
           />
+          <span className="text-sm font-bold text-foreground tracking-tight">
+            MADRL Portfolio
+          </span>
         </div>
         <StatusBar />
         <ResearchPanel />

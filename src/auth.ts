@@ -26,10 +26,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const data = await res.json();
         const { access_token, user } = data.data;
 
+        console.log("login response", user);
+
         return {
           id: user.id,
           email: user.email,
-          name: user.name ?? null,
+          name: user.name,
           role: user.role,
           accessToken: access_token,
         };
@@ -46,10 +48,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       return token;
     },
     async session({ session, token }) {
-      (session.user as { id?: string }).id = token.sub as string;
-      (session.user as { role?: string }).role = token.role as string;
-      (session.user as { accessToken?: string }).accessToken =
-        token.accessToken as string;
+      session.user.id = token.sub as string;
+      session.user.role = token.role;
+      session.user.accessToken = token.accessToken;
       return session;
     },
   },

@@ -8,7 +8,6 @@ import { useUpdateMeMutation } from "@/store/api";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { AlertMessage } from "@/components/ui/AlertMessage";
-import { Typography } from "@/components/ui/Typography";
 import type { UserProfile } from "@/types/api";
 
 const profileSchema = z
@@ -58,38 +57,35 @@ export function EditProfileForm({ user }: { user: UserProfile }) {
   };
 
   return (
-    <div className="rounded-xl border border-border bg-surface p-6">
-      <Typography variant="h3" className="mb-4">Edit Profile</Typography>
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-        <Input
-          label="Email"
-          type="email"
-          error={errors.email?.message}
-          {...register("email")}
-        />
-        <Input
-          label="Username"
-          error={errors.username?.message}
-          {...register("username")}
-        />
-        <Input
-          label="New Password"
-          type="password"
-          placeholder="Leave blank to keep current"
-          error={errors.password?.message}
-          {...register("password")}
-        />
-        <Input
-          label="Confirm Password"
-          type="password"
-          error={errors.confirmPassword?.message}
-          {...register("confirmPassword")}
-        />
-        {errors.root && <AlertMessage message={errors.root.message ?? ""} />}
-        <Button type="submit" loading={isSubmitting} disabled={!isDirty}>
-          Save Changes
-        </Button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+      <Input
+        label="Email"
+        type="email"
+        error={errors.email?.message}
+        {...register("email")}
+      />
+      <Input
+        label="Username"
+        error={errors.username?.message}
+        {...register("username")}
+      />
+      <Input
+        label="New Password"
+        type="password"
+        placeholder="Leave blank to keep current"
+        error={errors.password?.message}
+        {...register("password")}
+      />
+      <Input
+        label="Confirm Password"
+        type="password"
+        error={errors.confirmPassword?.message}
+        {...register("confirmPassword")}
+      />
+      {errors.root && <AlertMessage message={errors.root.message ?? ""} />}
+      <Button type="submit" loading={isSubmitting} disabled={!isDirty}>
+        Save Changes
+      </Button>
+    </form>
   );
 }

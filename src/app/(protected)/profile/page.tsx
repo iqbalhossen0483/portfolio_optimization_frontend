@@ -17,7 +17,12 @@ export default function ProfilePage() {
       ) : (
         <>
           <AccountInfoCard user={user} />
-          <EditProfileForm user={user} />
+          <div className="rounded-xl border border-border bg-surface p-6">
+            <Typography variant="h3" className="mb-4">
+              Edit Profile
+            </Typography>
+            <EditProfileForm user={user} />
+          </div>
         </>
       )}
     </div>

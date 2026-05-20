@@ -1,17 +1,25 @@
 "use client";
 
-import { useState } from "react";
-import { GitMerge, Swords, Blend, Info } from "lucide-react";
-import { useAppSelector } from "@/store/hooks";
-import { Tabs } from "@/components/ui/Tabs";
 import { Badge } from "@/components/ui/Badge";
 import { Chip } from "@/components/ui/Chip";
+import { Tabs } from "@/components/ui/Tabs";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { useAppSelector } from "@/store/hooks";
+import { Blend, GitMerge, Info, Swords } from "lucide-react";
+import { useState } from "react";
 import { TopologyTable } from "./TopologyTable";
 
 const topologyTabs = [
-  { id: "cooperative", label: "Cooperative", icon: <GitMerge className="w-3 h-3" /> },
-  { id: "competitive", label: "Competitive", icon: <Swords className="w-3 h-3" /> },
+  {
+    id: "cooperative",
+    label: "Cooperative",
+    icon: <GitMerge className="w-3 h-3" />,
+  },
+  {
+    id: "competitive",
+    label: "Competitive",
+    icon: <Swords className="w-3 h-3" />,
+  },
   { id: "mixed", label: "Mixed", icon: <Blend className="w-3 h-3" /> },
 ];
 
