@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
 import { auth } from "@/auth";
-import { Navbar } from "@/components/layout/Navbar";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { Navbar } from "@/components/layout/Navbar";
+import { redirect } from "next/navigation";
 
 export default async function ProtectedLayout({
   children,
