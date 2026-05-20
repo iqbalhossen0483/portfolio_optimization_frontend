@@ -14,39 +14,34 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
         const res = await fetch(`${process.env.API_BASE_URL}/auth/login`, {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: new URLSearchParams({
-            username: credentials.email as string,
-            password: credentials.password as string,
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: credentials.email,
+            password: credentials.password,
           }),
         });
 
         if (!res.ok) return null;
 
         const data = await res.json();
-        const { access_token, role } = data;
-
-        // Decode JWT payload to get user info
-        const payload = JSON.parse(
-          Buffer.from(access_token.split(".")[1], "base64").toString(),
-        );
+        const { access_token, user } = data.data;
 
         return {
-          id: String(payload.sub),
-          email: payload.email ?? (credentials.email as string),
-          name: payload.username ?? null,
-          role,
+          id: user.id,
+          email: user.email,
+          name: user.name ?? null,
+          role: user.role,
           accessToken: access_token,
         };
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role;
-        token.accessToken = user.accessToken;
-        token.sub = user.id;
+    async jwt({ token, user: data }) {
+      if (data) {
+        token.role = data.role;
+        token.accessToken = data.accessToken;
+        token.sub = data.id;
       }
       return token;
     },

@@ -1,17 +1,17 @@
+import type {
+  AssetListResponse,
+  AssetsResponse,
+  ChatSessionDetail,
+  ChatSessionListResponse,
+  DashboardMetrics,
+  TrainingJobResponse,
+  TrainingStatusResponse,
+  UserListResponse,
+  UserProfile,
+} from "@/types/api";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession, signOut } from "next-auth/react";
 import { toast } from "react-toastify";
-import type {
-  UserProfile,
-  UserListResponse,
-  ChatSessionListResponse,
-  ChatSessionDetail,
-  TrainingJobResponse,
-  TrainingStatusResponse,
-  AssetsResponse,
-  DashboardMetrics,
-  AssetListResponse,
-} from "@/types/api";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -58,7 +58,7 @@ export const api = createApi({
     // ── Auth ─────────────────────────────────────────────────────────────────
     register: builder.mutation<
       UserProfile,
-      { email: string; username: string; password: string }
+      { email: string; name: string; password: string }
     >({
       query: (body) => ({ url: "/auth/register", method: "POST", body }),
     }),

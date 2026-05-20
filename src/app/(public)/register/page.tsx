@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { Eye, EyeOff } from "lucide-react";
 import { AuthCard } from "@/components/auth/AuthCard";
-import { Input } from "@/components/ui/Input";
-import { Button } from "@/components/ui/Button";
 import { AlertMessage } from "@/components/ui/AlertMessage";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
 import { Typography } from "@/components/ui/Typography";
 import { registerSchema, type RegisterSchema } from "@/lib/validators/auth";
 import { useRegisterMutation } from "@/store/api";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Eye, EyeOff } from "lucide-react";
+import { signIn } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function RegisterPage() {
     try {
       await register({
         email: data.email,
-        username: data.username,
+        name: data.name,
         password: data.password,
       }).unwrap();
       await signIn("credentials", {
@@ -45,7 +45,7 @@ export default function RegisterPage() {
     } catch (err: unknown) {
       const status = (err as { status?: number })?.status;
       if (status === 409) {
-        setServerError("Email or username already taken");
+        setServerError("Email already taken");
       } else {
         setServerError("Registration failed. Please try again.");
       }
@@ -66,10 +66,10 @@ export default function RegisterPage() {
           {...rhf("email")}
         />
         <Input
-          label="Username"
+          label="name"
           placeholder="johndoe"
-          error={errors.username?.message}
-          {...rhf("username")}
+          error={errors.name?.message}
+          {...rhf("name")}
         />
         <Input
           label="Password"

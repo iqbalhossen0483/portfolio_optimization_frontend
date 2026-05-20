@@ -4,7 +4,7 @@ export type UserRole = "user" | "admin";
 export interface UserProfile {
   id: number;
   email: string;
-  username: string;
+  name: string;
   role: UserRole;
   is_active: boolean;
   created_at: string;
