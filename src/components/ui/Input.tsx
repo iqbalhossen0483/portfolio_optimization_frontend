@@ -39,8 +39,10 @@ export function Input({
           id={inputId}
           className={cn(
             "w-full rounded-lg border bg-surface-raised px-3 py-2 text-sm text-foreground placeholder:text-subtle transition-colors",
-            "border-border focus:outline-none focus:ring-[1.5px] focus:ring-primary",
-            error && "border-destructive",
+            "focus:outline-none focus:ring-[1.5px]",
+            error
+              ? "border-destructive focus:ring-destructive"
+              : "border-border focus:ring-primary",
             leadingIcon && "pl-9",
             trailingIcon && "pr-9",
             className,

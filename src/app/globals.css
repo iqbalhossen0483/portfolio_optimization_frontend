@@ -52,26 +52,6 @@
   /* Typography */
   --font-sans: var(--font-sans), Geist, system-ui, sans-serif;
   --font-mono: var(--font-mono), "Geist Mono", "Courier New", monospace;
-
-  /* Border radius */
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
-  --radius-xl: 0.75rem;
-  --radius-2xl: 1rem;
-  --radius-3xl: 1.5rem;
-  --radius-full: 9999px;
-
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.5);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.4);
-  --shadow-lg:
-    0 10px 15px -3px rgb(0 0 0 / 0.5), 0 4px 6px -4px rgb(0 0 0 / 0.4);
-  --shadow-xl:
-    0 20px 25px -5px rgb(0 0 0 / 0.6), 0 8px 10px -6px rgb(0 0 0 / 0.4);
-
-  /* Auth card entrance */
-  --animate-auth-rise: auth-rise 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes auth-rise {
@@ -133,47 +113,47 @@
 }
 
 .dark {
-  /* ── Canvas — Navy shell ─────────────────────────────────────────────────── */
-  --background: #010d1e;
-  --surface: #0d3d72;
-  --surface-raised: #0d3d72;
+  /* ── Canvas — Slate navy, 3-tier elevation ──────────────────────────────── */
+  --background: #060d1a;
+  --surface: #0f1a2d;
+  --surface-raised: #18253c;
 
-  /* ── Borders ─────────────────────────────────────────────────────────────── */
-  --border: #1e5799;
-  --border-strong: #378add;
+  /* ── Borders — Neutral, decoupled from primary ──────────────────────────── */
+  --border: #1f2d45;
+  --border-strong: #324867;
 
-  /* ── Text ────────────────────────────────────────────────────────────────── */
+  /* ── Text — Cool slate, controlled chroma ───────────────────────────────── */
   --foreground: #e6f1fb;
-  --foreground-muted: #7ab3e0;
-  --foreground-subtle: #378add;
+  --foreground-muted: #94a8c4;
+  --foreground-subtle: #607594;
 
-  /* ── Primary — Sky blue on dark surfaces ─────────────────────────────────── */
+  /* ── Primary — Sky blue ─────────────────────────────────────────────────── */
   --primary: #378add;
-  --primary-hover: #e6f1fb;
-  --primary-fg: #042c53;
+  --primary-hover: #5aa4e8;
+  --primary-fg: #ffffff;
 
-  /* ── Destructive — Loss red ──────────────────────────────────────────────── */
-  --destructive: #a32d2d;
-  --destructive-hover: #c43535;
+  /* ── Destructive — Loss red, lifted for dark contrast ───────────────────── */
+  --destructive: #e05656;
+  --destructive-hover: #ef6767;
   --destructive-fg: #ffffff;
 
   /* ── Semantic state ──────────────────────────────────────────────────────── */
-  --success: #97c459;
-  --success-fg: #042c53;
-  --warning: #854f0b;
-  --warning-fg: #f1efe8;
+  --success: #4ade80;
+  --success-fg: #052b14;
+  --warning: #f5a524;
+  --warning-fg: #1f1305;
 
   /* ── Financial domain (strict semantic) ─────────────────────────────────── */
-  --positive: #97c459;
-  --negative: #a32d2d;
-  --esg: #97c459;
+  --positive: #4ade80;
+  --negative: #e05656;
+  --esg: #4ade80;
 
-  /* ── Training job status ─────────────────────────────────────────────────── */
-  --status-queued: #378add;
+  /* ── Training job status — Distinct hues ────────────────────────────────── */
+  --status-queued: #607594;
   --status-running: #378add;
-  --status-completed: #97c459;
-  --status-failed: #a32d2d;
-  --status-stopped: #854f0b;
+  --status-completed: #4ade80;
+  --status-failed: #e05656;
+  --status-stopped: #f5a524;
 
   /* ── Interaction ─────────────────────────────────────────────────────────── */
   --ring: #378add;
