@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { pushMetric, pushLog } from "@/store/slices/trainingSlice";
-import { useGetTrainingStatusQuery } from "@/store/api";
-import { MonitorHeader } from "@/components/admin/MonitorHeader";
-import { MetricsGrid } from "@/components/admin/MetricsGrid";
 import { EventLog } from "@/components/admin/EventLog";
+import { MetricsGrid } from "@/components/admin/MetricsGrid";
+import { MonitorHeader } from "@/components/admin/MonitorHeader";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { useGetTrainingStatusQuery } from "@/store/api";
+import { useAppDispatch } from "@/store/hooks";
+import { pushLog, pushMetric } from "@/store/slices/trainingSlice";
 import type { TrainingMetric } from "@/types/store";
+import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 function formatLogLine(msg: Record<string, unknown>): string {
   if (msg.type === "step") {
@@ -30,11 +30,11 @@ export default function TrainingMonitorPage() {
   const dispatch = useAppDispatch();
   const [warmupPct, setWarmupPct] = useState<number | null>(null);
 
-  const { data: statusData, isLoading } = useGetTrainingStatusQuery(id, {
+  const { data, isLoading } = useGetTrainingStatusQuery(id, {
     pollingInterval: 10_000,
+    skip: !id,
   });
-
-  const liveMetrics = useAppSelector((s) => s.training.liveMetrics[id]);
+  const statusData = data?.data;
 
   useEffect(() => {
     if (!session?.user?.accessToken) return;
@@ -111,11 +111,7 @@ export default function TrainingMonitorPage() {
 
       {warmupPct !== null && (
         <div className="px-6 py-3 border-b border-border">
-          <ProgressBar
-            value={warmupPct}
-            label="Warmup"
-            showPercent
-          />
+          <ProgressBar value={warmupPct} label="Warmup" showPercent />
         </div>
       )}
 

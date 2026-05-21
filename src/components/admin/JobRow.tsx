@@ -1,16 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
-import { StopCircle } from "lucide-react";
-import { useGetTrainingStatusQuery, useStopTrainingMutation } from "@/store/api";
-import { Badge, type BadgeVariant } from "@/components/ui/Badge";
-import { ProgressBar } from "@/components/ui/ProgressBar";
-import { IconButton } from "@/components/ui/IconButton";
 import { AlertDialog } from "@/components/ui/AlertDialog";
-import { Typography } from "@/components/ui/Typography";
+import { Badge, type BadgeVariant } from "@/components/ui/Badge";
+import { IconButton } from "@/components/ui/IconButton";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Tooltip } from "@/components/ui/Tooltip";
+import { Typography } from "@/components/ui/Typography";
+import {
+  useGetTrainingStatusQuery,
+  useStopTrainingMutation,
+} from "@/store/api";
 import type { TrainingStatus } from "@/types/api";
+import { StopCircle } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
 
 const statusToBadgeVariant: Record<TrainingStatus, BadgeVariant> = {
   queued: "default",
@@ -26,7 +29,10 @@ interface JobRowProps {
 
 export function JobRow({ jobId }: JobRowProps) {
   const [showStop, setShowStop] = useState(false);
-  const { data } = useGetTrainingStatusQuery(jobId, { pollingInterval: 10_000 });
+  const { data: res } = useGetTrainingStatusQuery(jobId, {
+    pollingInterval: 10_000,
+    skip: !jobId,
+  });
   const [stopTraining, { isLoading: stopping }] = useStopTrainingMutation();
 
   const handleStop = async () => {
@@ -34,16 +40,22 @@ export function JobRow({ jobId }: JobRowProps) {
     setShowStop(false);
   };
 
-  if (!data) return null;
+  if (!res) return null;
+
+  const data = res.data;
 
   return (
     <>
       <tr className="border-t border-border hover:bg-surface-raised/50 transition-colors">
         <td className="px-4 py-3">
-          <Typography variant="mono" as="span">#{data.job_id}</Typography>
+          <Typography variant="mono" as="span">
+            #{data.job_id}
+          </Typography>
         </td>
         <td className="px-4 py-3">
-          <Badge variant={statusToBadgeVariant[data.status]}>{data.status}</Badge>
+          <Badge variant={statusToBadgeVariant[data.status]}>
+            {data.status}
+          </Badge>
         </td>
         <td className="px-4 py-3 w-40">
           <ProgressBar value={data.progress_pct} showPercent />

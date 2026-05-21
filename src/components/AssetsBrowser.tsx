@@ -1,25 +1,23 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { useListAssetsQuery } from "@/store/api";
-import { Select } from "@/components/ui/Select";
 import { SearchBar } from "@/components/admin/SearchBar";
+import { Select } from "@/components/ui/Select";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Typography } from "@/components/ui/Typography";
+import { useListAssetsQuery } from "@/store/api";
+import { useMemo, useState } from "react";
 
 export function AssetsBrowser() {
   const [sector, setSector] = useState("");
   const [search, setSearch] = useState("");
 
-  const { data, isLoading } = useListAssetsQuery(
+  const { data: res, isLoading } = useListAssetsQuery(
     sector ? { sector } : undefined,
   );
+  const data = res?.data;
 
   const sectors = useMemo(
-    () =>
-      data
-        ? [...new Set(data.assets.map((a) => a.sector))].sort()
-        : [],
+    () => (data ? [...new Set(data.assets.map((a) => a.sector))].sort() : []),
     [data],
   );
 
@@ -29,8 +27,7 @@ export function AssetsBrowser() {
     if (!q) return data.assets;
     return data.assets.filter(
       (a) =>
-        a.isin.toLowerCase().includes(q) ||
-        a.name.toLowerCase().includes(q),
+        a.isin.toLowerCase().includes(q) || a.name.toLowerCase().includes(q),
     );
   }, [data, search]);
 
@@ -74,26 +71,35 @@ export function AssetsBrowser() {
             {isLoading
               ? Array.from({ length: 5 }).map((_, i) => (
                   <tr key={i} className="border-t border-border">
-                    <td className="px-4 py-3"><Skeleton className="h-4" /></td>
-                    <td className="px-4 py-3"><Skeleton className="h-4" /></td>
-                    <td className="px-4 py-3"><Skeleton className="h-4" /></td>
+                    <td className="px-4 py-3">
+                      <Skeleton className="h-4" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <Skeleton className="h-4" />
+                    </td>
+                    <td className="px-4 py-3">
+                      <Skeleton className="h-4" />
+                    </td>
                   </tr>
                 ))
               : filtered.map((a) => (
-                  <tr key={a.isin} className="border-t border-border hover:bg-surface-raised/50">
+                  <tr
+                    key={a.isin}
+                    className="border-t border-border hover:bg-surface-raised/50"
+                  >
                     <td className="px-4 py-3">
                       <code className="font-mono text-xs">{a.isin}</code>
                     </td>
-                    <td className="px-4 py-3 text-sm text-foreground">{a.name}</td>
+                    <td className="px-4 py-3 text-sm text-foreground">
+                      {a.name}
+                    </td>
                     <td className="px-4 py-3 text-sm text-muted">{a.sector}</td>
                   </tr>
                 ))}
           </tbody>
         </table>
       </div>
-      <Typography variant="caption">
-        {filtered.length} assets shown
-      </Typography>
+      <Typography variant="caption">{filtered.length} assets shown</Typography>
     </div>
   );
 }

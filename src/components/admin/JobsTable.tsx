@@ -38,8 +38,8 @@ export function JobsTable() {
           </tr>
         </thead>
         <tbody>
-          {[...jobIds].reverse().map((id) => (
-            <JobRow key={id} jobId={id} />
+          {[...jobIds].reverse().map((id, i) => (
+            <JobRow key={i} jobId={id} />
           ))}
         </tbody>
       </table>

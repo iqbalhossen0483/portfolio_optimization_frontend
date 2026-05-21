@@ -1,29 +1,44 @@
 "use client";
 
 import { cn } from "@/lib/cn";
-import { Upload } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { useRef, useState } from "react";
 
 interface FileUploadProps {
   accept?: string;
-  onChange: (file: File | null) => void;
+  multiple?: boolean;
+  onChange: (files: File[]) => void;
+  files?: File[];
   label?: string;
   error?: string;
 }
 
 export function FileUpload({
   accept,
+  multiple = false,
   onChange,
+  files,
   label,
   error,
 }: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
-  const [fileName, setFileName] = useState<string | null>(null);
+  const [internal, setInternal] = useState<File[]>([]);
+  const selected = files ?? internal;
 
-  const handleFile = (file: File | null) => {
-    setFileName(file?.name ?? null);
-    onChange(file);
+  const update = (next: File[]) => {
+    if (files === undefined) setInternal(next);
+    onChange(next);
+  };
+
+  const addFiles = (incoming: FileList | null) => {
+    if (!incoming || incoming.length === 0) return;
+    const arr = Array.from(incoming);
+    update(multiple ? [...selected, ...arr] : arr.slice(0, 1));
+  };
+
+  const removeAt = (idx: number) => {
+    update(selected.filter((_, i) => i !== idx));
   };
 
   return (
@@ -35,7 +50,7 @@ export function FileUpload({
       )}
       <div
         className={cn(
-          "border-2 border-dashed border-border rounded-lg p-6 text-center transition-colors",
+          "border-2 border-dashed border-border rounded-lg p-6 text-center transition-colors cursor-pointer",
           "hover:border-primary",
           dragOver && "border-primary bg-primary/5",
           error && "border-destructive",
@@ -49,26 +64,49 @@ export function FileUpload({
         onDrop={(e) => {
           e.preventDefault();
           setDragOver(false);
-          const file = e.dataTransfer.files[0] ?? null;
-          handleFile(file);
+          addFiles(e.dataTransfer.files);
         }}
       >
         <Upload className="w-6 h-6 text-muted mx-auto mb-2" />
-        {fileName ? (
-          <p className="text-sm text-foreground">{fileName}</p>
-        ) : (
-          <p className="text-sm text-muted">
-            Drop file here or <span className="text-primary">browse</span>
-          </p>
-        )}
+        <p className="text-sm text-muted">
+          {multiple ? "Drop files here or " : "Drop file here or "}
+          <span className="text-primary">browse</span>
+        </p>
         <input
           ref={inputRef}
           type="file"
           accept={accept}
+          multiple={multiple}
           className="hidden"
-          onChange={(e) => handleFile(e.target.files?.[0] ?? null)}
+          onChange={(e) => {
+            addFiles(e.target.files);
+            e.target.value = "";
+          }}
         />
       </div>
+      {selected.length > 0 && (
+        <ul className="flex flex-col gap-1 mt-1">
+          {selected.map((file, idx) => (
+            <li
+              key={`${file.name}-${idx}`}
+              className="flex items-center justify-between gap-2 px-3 py-1.5 rounded-md bg-surface-raised border border-border text-sm"
+            >
+              <span className="truncate text-foreground">{file.name}</span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeAt(idx);
+                }}
+                className="text-muted hover:text-destructive transition-colors"
+                aria-label={`Remove ${file.name}`}
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
       {error && <p className="text-xs text-destructive">{error}</p>}
     </div>
   );

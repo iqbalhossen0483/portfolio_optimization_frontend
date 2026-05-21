@@ -1,20 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useForm, Controller } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/store/hooks";
-import { addJob } from "@/store/slices/trainingSlice";
-import { useStartTrainingMutation } from "@/store/api";
-import { trainingSchema, type TrainingSchema } from "@/lib/validators/training";
+import { AlertMessage } from "@/components/ui/AlertMessage";
 import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Select } from "@/components/ui/Select";
-import { RadioGroup } from "@/components/ui/RadioGroup";
 import { Collapsible } from "@/components/ui/Collapsible";
 import { FileUpload } from "@/components/ui/FileUpload";
-import { AlertMessage } from "@/components/ui/AlertMessage";
+import { Input } from "@/components/ui/Input";
+import { RadioGroup } from "@/components/ui/RadioGroup";
+import { Select } from "@/components/ui/Select";
+import { trainingSchema, type TrainingSchema } from "@/lib/validators/training";
+import { useStartTrainingMutation } from "@/store/api";
+import { useAppDispatch } from "@/store/hooks";
+import { addJob } from "@/store/slices/trainingSlice";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { DateRangeInputs } from "./DateRangeInputs";
 
 const defaultValues: TrainingSchema = {
@@ -34,7 +34,8 @@ const defaultValues: TrainingSchema = {
 export function StartTrainingForm() {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [files, setFiles] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [fileError, setFileError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [startTraining] = useStartTrainingMutation();
 
@@ -43,7 +44,6 @@ export function StartTrainingForm() {
     handleSubmit,
     control,
     setValue,
-    watch,
     formState: { errors, isSubmitting },
   } = useForm<TrainingSchema>({
     resolver: zodResolver(trainingSchema),
@@ -52,22 +52,32 @@ export function StartTrainingForm() {
 
   const onSubmit = async (data: TrainingSchema) => {
     setError(null);
+    setFileError(null);
+    if (files.length === 0) {
+      setFileError("Upload at least one .xlsx file.");
+      return;
+    }
     const formData = new FormData();
-    if (files) formData.append("file", files);
+    for (const file of files) formData.append("files", file);
     formData.append("portfolio_model", data.portfolioModel);
     formData.append("topology", data.topology);
     if (data.trainStart) formData.append("train_start", data.trainStart);
     if (data.trainEnd) formData.append("train_end", data.trainEnd);
     if (data.valStart) formData.append("val_start", data.valStart);
     if (data.valEnd) formData.append("val_end", data.valEnd);
-    formData.append("alpha1", String(data.alpha1));
-    formData.append("alpha2", String(data.alpha2));
-    formData.append("alpha3", String(data.alpha3));
-    formData.append("beta", String(data.beta));
-    formData.append("lam", String(data.lam));
+    formData.append(
+      "hyperparams_json",
+      JSON.stringify({
+        alpha_1: data.alpha1,
+        alpha_2: data.alpha2,
+        alpha_3: data.alpha3,
+        beta: data.beta,
+        lam: data.lam,
+      }),
+    );
 
     try {
-      const res = await startTraining(formData).unwrap();
+      const { data: res } = await startTraining(formData).unwrap();
       dispatch(addJob(res.job_id));
       router.push(`/admin/training/${res.job_id}`);
     } catch {
@@ -75,15 +85,24 @@ export function StartTrainingForm() {
     }
   };
 
-  const topology = watch("topology");
-  const portfolioModel = watch("portfolioModel");
+  const topology = useWatch({ control, name: "topology" });
+  const trainStart = useWatch({ control, name: "trainStart" });
+  const trainEnd = useWatch({ control, name: "trainEnd" });
+  const valStart = useWatch({ control, name: "valStart" });
+  const valEnd = useWatch({ control, name: "valEnd" });
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-5">
       <FileUpload
         label="Training Data (XLSX)"
         accept=".xlsx"
-        onChange={setFiles}
+        multiple
+        files={files}
+        onChange={(next) => {
+          setFiles(next);
+          if (next.length > 0) setFileError(null);
+        }}
+        error={fileError ?? undefined}
       />
 
       <Controller
@@ -119,10 +138,10 @@ export function StartTrainingForm() {
       />
 
       <DateRangeInputs
-        trainStart={watch("trainStart") ?? ""}
-        trainEnd={watch("trainEnd") ?? ""}
-        valStart={watch("valStart") ?? ""}
-        valEnd={watch("valEnd") ?? ""}
+        trainStart={trainStart ?? ""}
+        trainEnd={trainEnd ?? ""}
+        valStart={valStart ?? ""}
+        valEnd={valEnd ?? ""}
         onChange={(field, value) =>
           setValue(field as keyof TrainingSchema, value)
         }

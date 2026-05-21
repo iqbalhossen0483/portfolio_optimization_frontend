@@ -126,23 +126,31 @@ export const api = createApi({
     }),
 
     // ── Training ─────────────────────────────────────────────────────────────
-    startTraining: builder.mutation<TrainingJobResponse, FormData>({
-      query: (formData) => ({
-        url: "/training/start",
-        method: "POST",
-        body: formData,
-      }),
-    }),
-    getTrainingStatus: builder.query<TrainingStatusResponse, number>({
+    startTraining: builder.mutation<APIResponse<TrainingJobResponse>, FormData>(
+      {
+        query: (formData) => ({
+          url: "/training/start",
+          method: "POST",
+          body: formData,
+        }),
+      },
+    ),
+    getTrainingStatus: builder.query<
+      APIResponse<TrainingStatusResponse>,
+      number
+    >({
       query: (id) => `/training/${id}/status`,
       providesTags: ["Training"],
     }),
-    stopTraining: builder.mutation<TrainingJobResponse, number>({
+    stopTraining: builder.mutation<APIResponse<TrainingJobResponse>, number>({
       query: (id) => ({ url: `/training/${id}/stop`, method: "POST" }),
     }),
 
     // ── Data ─────────────────────────────────────────────────────────────────
-    listAssets: builder.query<AssetsResponse, { sector?: string } | void>({
+    listAssets: builder.query<
+      APIResponse<AssetsResponse>,
+      { sector?: string } | void
+    >({
       query: (params) => ({
         url: "/data/assets",
         params: params ?? {},
