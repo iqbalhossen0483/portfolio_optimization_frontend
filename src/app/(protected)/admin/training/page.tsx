@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
-import { Plus } from "lucide-react";
+import { JobsTable } from "@/components/admin/JobsTable";
+import { StartTrainingForm } from "@/components/admin/StartTrainingForm";
 import { Button } from "@/components/ui/Button";
 import { Typography } from "@/components/ui/Typography";
-import { StartTrainingForm } from "@/components/admin/StartTrainingForm";
-import { JobsTable } from "@/components/admin/JobsTable";
+import { Plus } from "lucide-react";
+import { useState } from "react";
 
 export default function TrainingPage() {
   const [showForm, setShowForm] = useState(false);

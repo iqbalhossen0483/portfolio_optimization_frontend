@@ -151,12 +151,12 @@ export const api = createApi({
     }),
 
     // ── Admin ─────────────────────────────────────────────────────────────────
-    getDashboard: builder.query<DashboardMetrics, void>({
+    getDashboard: builder.query<APIResponse<DashboardMetrics>, void>({
       query: () => "/admin/dashboard",
       providesTags: ["Admin"],
     }),
     listAdminAssets: builder.query<
-      AssetListResponse,
+      APIResponse<AssetListResponse>,
       { q?: string; limit?: number; cursor?: string }
     >({
       query: (params) => ({ url: "/admin/assets", params }),

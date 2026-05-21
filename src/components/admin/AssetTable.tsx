@@ -1,32 +1,32 @@
 "use client";
 
-import { useState } from "react";
-import {
-  useReactTable,
-  getCoreRowModel,
-  flexRender,
-  createColumnHelper,
-} from "@tanstack/react-table";
-import { useListAdminAssetsQuery } from "@/store/api";
-import { useDebounce } from "@/hooks/useDebounce";
 import { Chip } from "@/components/ui/Chip";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { SearchBar } from "./SearchBar";
-import { PaginationControls } from "./PaginationControls";
+import { useDebounce } from "@/hooks/useDebounce";
+import { useListAdminAssetsQuery } from "@/store/api";
 import type { AssetListItem } from "@/types/api";
+import {
+  createColumnHelper,
+  flexRender,
+  getCoreRowModel,
+  useReactTable,
+} from "@tanstack/react-table";
+import { useState } from "react";
+import { PaginationControls } from "./PaginationControls";
+import { SearchBar } from "./SearchBar";
 
 const col = createColumnHelper<AssetListItem>();
 
 const columns = [
   col.accessor("isin", {
     header: "ISIN",
-    cell: (i) => (
-      <code className="font-mono text-xs">{i.getValue()}</code>
-    ),
+    cell: (i) => <code className="font-mono text-xs">{i.getValue()}</code>,
   }),
   col.accessor("name", {
     header: "Name",
-    cell: (i) => <span className="text-sm text-foreground">{i.getValue()}</span>,
+    cell: (i) => (
+      <span className="text-sm text-foreground">{i.getValue()}</span>
+    ),
   }),
   col.accessor("sector", {
     header: "Sector",
@@ -56,11 +56,12 @@ export function AssetTable() {
   const debouncedQ = useDebounce(search, 300);
   const currentCursor = cursorStack.at(-1);
 
-  const { data, isFetching } = useListAdminAssetsQuery({
+  const { data: res, isFetching } = useListAdminAssetsQuery({
     q: debouncedQ || undefined,
     limit: 20,
     cursor: currentCursor,
   });
+  const data = res?.data;
 
   const table = useReactTable({
     data: data?.items ?? [],
@@ -99,30 +100,31 @@ export function AssetTable() {
             ))}
           </thead>
           <tbody>
-            {isFetching && !data ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <tr key={i} className="border-t border-border">
-                  {columns.map((_, ci) => (
-                    <td key={ci} className="px-4 py-3">
-                      <Skeleton className="h-4" />
-                    </td>
-                  ))}
-                </tr>
-              ))
-            ) : (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className="border-t border-border hover:bg-surface-raised/50 transition-colors"
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td key={cell.id} className="px-4 py-3">
-                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                    </td>
-                  ))}
-                </tr>
-              ))
-            )}
+            {isFetching && !data
+              ? Array.from({ length: 5 }).map((_, i) => (
+                  <tr key={i} className="border-t border-border">
+                    {columns.map((_, ci) => (
+                      <td key={ci} className="px-4 py-3">
+                        <Skeleton className="h-4" />
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              : table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="border-t border-border hover:bg-surface-raised/50 transition-colors"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td key={cell.id} className="px-4 py-3">
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext(),
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
           </tbody>
         </table>
       </div>

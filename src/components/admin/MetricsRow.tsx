@@ -1,25 +1,25 @@
 "use client";
 
-import {
-  Database,
-  Activity,
-  Users,
-  BarChart2,
-  Loader2,
-  CheckCircle2,
-} from "lucide-react";
-import { useGetDashboardQuery } from "@/store/api";
-import { StatCard } from "./StatCard";
 import { Badge } from "@/components/ui/Badge";
+import { useGetDashboardQuery } from "@/store/api";
+import {
+  Activity,
+  BarChart2,
+  CheckCircle2,
+  Database,
+  Loader2,
+  Users,
+} from "lucide-react";
+import { StatCard } from "./StatCard";
 
 const skeletonCards = Array.from({ length: 5 });
 
 export function MetricsRow() {
-  const { data, isLoading } = useGetDashboardQuery(undefined, {
+  const { data: res, isLoading } = useGetDashboardQuery(undefined, {
     pollingInterval: 15_000,
   });
 
-  if (isLoading && !data) {
+  if (isLoading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         {skeletonCards.map((_, i) => (
@@ -34,6 +34,7 @@ export function MetricsRow() {
       </div>
     );
   }
+  const data = res?.data;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
