@@ -75,7 +75,7 @@ export default function ChatSessionPage() {
           </div>
         ) : (
           <MessageThread
-            messages={sessionDetail?.messages ?? []}
+            messages={sessionDetail?.data?.messages ?? []}
             advisorChunks={advisorChunks}
             isStreaming={isStreaming}
           />

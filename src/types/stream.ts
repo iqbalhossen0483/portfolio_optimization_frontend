@@ -2,7 +2,6 @@ import type { PortfolioResult } from "./api";
 
 export interface StatusEvent {
   type: "status";
-  status: "thinking" | "calling_tool";
   agent: string;
   tool?: string;
   label: string;

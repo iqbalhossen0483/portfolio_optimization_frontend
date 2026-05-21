@@ -63,13 +63,13 @@ export function ChatSidebar() {
       <div className="flex-1 overflow-y-auto px-2 pb-2">
         {isLoading ? (
           <Skeleton count={5} className="h-12 mb-1" />
-        ) : (data?.sessions?.length ?? 0) === 0 ? (
+        ) : (data?.data?.sessions?.length ?? 0) === 0 ? (
           <p className="px-3 py-6 text-xs text-subtle text-center">
             No conversations yet
           </p>
         ) : (
           <SessionList
-            sessions={data?.sessions ?? []}
+            sessions={data?.data?.sessions ?? []}
             activeSessionId={activeSessionId}
           />
         )}

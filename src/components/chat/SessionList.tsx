@@ -43,13 +43,13 @@ function SessionRow({ session, isActive }: SessionRowProps) {
 
   const handleRenameSubmit = async () => {
     if (newName.trim() && newName !== session.name) {
-      await rename({ id: session.id, name: newName.trim() });
+      await rename({ sessionId: session.session_id, name: newName.trim() });
     }
     setRenaming(false);
   };
 
   const handleDelete = async () => {
-    await deleteSession(session.id);
+    await deleteSession(session.session_id);
     setShowDelete(false);
     router.push("/chat");
   };

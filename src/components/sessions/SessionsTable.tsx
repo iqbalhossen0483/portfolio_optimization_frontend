@@ -26,7 +26,7 @@ function SessionRow({ session }: { session: ChatSessionInfo }) {
 
   const handleRename = async () => {
     if (name.trim() && name !== session.name) {
-      await rename({ id: session.id, name: name.trim() });
+      await rename({ sessionId: session.session_id, name: name.trim() });
     }
     setEditing(false);
   };
@@ -96,7 +96,7 @@ function SessionRow({ session }: { session: ChatSessionInfo }) {
         confirmLabel="Delete"
         variant="danger"
         onConfirm={async () => {
-          await del(session.id);
+          await del(session.session_id);
           setShowDelete(false);
         }}
         loading={deleting}
@@ -134,7 +134,7 @@ export function SessionsTable() {
                   ))}
                 </tr>
               ))
-            : (data?.sessions ?? []).map((s) => (
+            : (data?.data?.sessions ?? []).map((s) => (
                 <SessionRow key={s.id} session={s} />
               ))}
         </tbody>

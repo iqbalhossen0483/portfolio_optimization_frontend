@@ -3,6 +3,7 @@ import type {
   AssetListResponse,
   AssetsResponse,
   ChatSessionDetail,
+  ChatSessionInfo,
   ChatSessionListResponse,
   DashboardMetrics,
   TrainingJobResponse,
@@ -97,27 +98,30 @@ export const api = createApi({
     }),
 
     // ── Chat ─────────────────────────────────────────────────────────────────
-    listSessions: builder.query<ChatSessionListResponse, void>({
+    listSessions: builder.query<APIResponse<ChatSessionListResponse>, void>({
       query: () => "/chat/sessions",
       providesTags: ["Chat"],
     }),
-    getSession: builder.query<ChatSessionDetail, string>({
+    getSession: builder.query<APIResponse<ChatSessionDetail>, string>({
       query: (sessionId) => `/chat/sessions/${sessionId}`,
       providesTags: ["Chat"],
     }),
     renameSession: builder.mutation<
-      ChatSessionDetail,
-      { id: number; name: string }
+      APIResponse<ChatSessionInfo>,
+      { sessionId: string; name: string }
     >({
-      query: ({ id, name }) => ({
-        url: `/chat/sessions/${id}`,
+      query: ({ sessionId, name }) => ({
+        url: `/chat/sessions/${sessionId}`,
         method: "PATCH",
         body: { name },
       }),
       invalidatesTags: ["Chat"],
     }),
-    deleteSession: builder.mutation<void, number>({
-      query: (id) => ({ url: `/chat/sessions/${id}`, method: "DELETE" }),
+    deleteSession: builder.mutation<APIResponse<null>, string>({
+      query: (sessionId) => ({
+        url: `/chat/sessions/${sessionId}`,
+        method: "DELETE",
+      }),
       invalidatesTags: ["Chat"],
     }),
 
