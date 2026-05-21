@@ -1,4 +1,5 @@
 import { auth } from "@/auth";
+import { AdminShell } from "@/components/admin/AdminShell";
 import { redirect } from "next/navigation";
 
 export default async function AdminLayout({
@@ -8,5 +9,5 @@ export default async function AdminLayout({
 }) {
   const session = await auth();
   if (session?.user?.role !== "admin") redirect("/chat");
-  return <>{children}</>;
+  return <AdminShell>{children}</AdminShell>;
 }

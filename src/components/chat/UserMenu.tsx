@@ -5,13 +5,22 @@ import { Switch } from "@/components/ui/Switch";
 import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { cn } from "@/lib/cn";
 import { useAppSelector } from "@/store/hooks";
-import { ChevronUp, LogOut, Moon, Settings, ShieldCheck } from "lucide-react";
+import {
+  ChevronUp,
+  LayoutDashboard,
+  LogOut,
+  Moon,
+  Settings,
+  ShieldCheck,
+} from "lucide-react";
 import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useRef, useState } from "react";
 import Avater from "../ui/Avater";
 
 export function UserMenu() {
+  const router = useRouter();
   const user = useAppSelector((s) => s.user.user);
   const { resolvedTheme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
@@ -33,6 +42,16 @@ export function UserMenu() {
             role="menu"
             className="absolute left-0 right-0 bottom-full mb-2 z-30 rounded-lg border border-border bg-surface-raised shadow-lg py-1"
           >
+            {isAdmin && (
+              <MenuItem
+                icon={<LayoutDashboard className="w-4 h-4" />}
+                label="Admin Console"
+                onClick={() => {
+                  router.push("/admin/dashboard");
+                  setOpen(false);
+                }}
+              />
+            )}
             <MenuItem
               icon={<Settings className="w-4 h-4" />}
               label="Profile Settings"

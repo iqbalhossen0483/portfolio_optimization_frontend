@@ -114,12 +114,51 @@ export interface AssetsResponse {
 }
 
 // ── Admin ───────────────────────────────────────────────────────────────────
+export interface TimeSeriesBucket {
+  /** ISO date string (YYYY-MM-DD) of the Monday that starts the bucket. */
+  week_start: string;
+  count: number;
+}
+
+export interface JobStatusBreakdown {
+  queued: number;
+  running: number;
+  completed: number;
+  failed: number;
+  stopped: number;
+}
+
+export interface RecentJobInfo {
+  id: number;
+  status: TrainingStatus;
+  portfolio_model: string;
+  topology: string;
+  best_sharpe: number | null;
+  started_at: string | null;
+  completed_at: string | null;
+  created_at: string;
+}
+
+export interface RecentUserInfo {
+  id: number;
+  name: string;
+  email: string;
+  role: UserRole;
+  profile: string | null;
+  created_at: string;
+}
+
 export interface DashboardMetrics {
   assets_count: number;
   jobs_count: number;
   users_count: number;
   market_data_count: number;
   training_running: boolean;
+  job_status_breakdown: JobStatusBreakdown;
+  users_per_week: TimeSeriesBucket[];
+  jobs_per_week: TimeSeriesBucket[];
+  recent_jobs: RecentJobInfo[];
+  recent_users: RecentUserInfo[];
 }
 
 export interface AssetListItem {

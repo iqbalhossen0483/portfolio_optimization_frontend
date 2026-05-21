@@ -1,18 +1,18 @@
 "use client";
 
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
-import { UsersTable } from "@/components/users/UsersTable";
+import { AssetTable } from "@/components/admin/AssetTable";
 
-export default function UsersPage() {
+export default function AssetsPage() {
   return (
     <>
       <AdminPageHeader
-        title="Users"
-        description="All accounts on the system"
+        title="Assets"
+        description="Browse all ingested equities and their market-data row counts"
       />
       <div className="flex-1 overflow-y-auto">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 py-6">
-          <UsersTable />
+          <AssetTable />
         </div>
       </div>
     </>
