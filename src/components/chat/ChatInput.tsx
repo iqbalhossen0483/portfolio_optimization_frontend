@@ -50,7 +50,7 @@ export function ChatInput({
           className={cn(
             "flex items-end gap-2 rounded-2xl border border-border bg-surface-raised",
             "px-3 py-2 shadow-sm transition-shadow",
-            "focus-within:ring-2 focus-within:ring-ring focus-within:ring-offset-2 focus-within:ring-offset-background",
+            "focus-within:ring-2 focus-within:ring-ring",
           )}
         >
           <textarea
@@ -80,7 +80,7 @@ export function ChatInput({
               aria-label="Send message"
               onClick={submit}
               disabled={!value.trim()}
-              className="bg-primary text-primary-fg hover:bg-primary-hover disabled:opacity-50"
+              className="bg-primary text-primary-fg hover:bg-primary-hover disabled:opacity-50 hover:text-white"
             />
           )}
         </div>

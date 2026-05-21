@@ -8,7 +8,6 @@ import { SessionHeader } from "@/components/chat/SessionHeader";
 import { BottomSheet } from "@/components/layout/BottomSheet";
 import { IconButton } from "@/components/ui/IconButton";
 import { Sheet } from "@/components/ui/Sheet";
-import { Skeleton } from "@/components/ui/Skeleton";
 import { useStreamingChat } from "@/hooks/useStreamingChat";
 import { useGetSessionQuery } from "@/store/api";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -38,7 +37,7 @@ export default function ChatSessionPage() {
 
   const handleSubmit = async (message: string) => {
     if (!session?.user?.accessToken) return;
-    dispatch(startStreaming());
+    dispatch(startStreaming({ message }));
     await stream(message, sessionId, session.user.accessToken);
   };
 
@@ -65,19 +64,12 @@ export default function ChatSessionPage() {
 
         <SessionHeader sessionId={sessionId} />
 
-        {isLoading ? (
-          <div className="flex-1 p-6">
-            <div className="mx-auto w-full max-w-3xl">
-              <Skeleton count={4} className="h-12 mb-3" />
-            </div>
-          </div>
-        ) : (
-          <MessageThread
-            messages={sessionDetail?.data?.messages ?? []}
-            advisorChunks={advisorChunks}
-            isStreaming={isStreaming}
-          />
-        )}
+        <MessageThread
+          messages={sessionDetail?.data?.messages ?? []}
+          advisorChunks={advisorChunks}
+          isStreaming={isStreaming}
+          isLoadingHistory={isLoading && !isStreaming}
+        />
 
         <ChatInput
           isStreaming={isStreaming}

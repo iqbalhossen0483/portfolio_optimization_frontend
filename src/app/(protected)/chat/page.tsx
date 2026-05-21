@@ -27,7 +27,7 @@ export default function ChatPage() {
     const sessionId = crypto.randomUUID();
     router.replace(`/chat/${sessionId}`);
     dispatch(setActiveSession(sessionId));
-    dispatch(startStreaming());
+    dispatch(startStreaming({ message }));
     await stream(message, sessionId, session.user.accessToken);
   };
 
