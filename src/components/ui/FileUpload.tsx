@@ -1,8 +1,8 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Upload } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { Upload } from "lucide-react";
+import { useRef, useState } from "react";
 
 interface FileUploadProps {
   accept?: string;
@@ -11,7 +11,12 @@ interface FileUploadProps {
   error?: string;
 }
 
-export function FileUpload({ accept, onChange, label, error }: FileUploadProps) {
+export function FileUpload({
+  accept,
+  onChange,
+  label,
+  error,
+}: FileUploadProps) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
   const [fileName, setFileName] = useState<string | null>(null);
@@ -30,7 +35,7 @@ export function FileUpload({ accept, onChange, label, error }: FileUploadProps) 
       )}
       <div
         className={cn(
-          "border-2 border-dashed border-border rounded-lg p-6 text-center cursor-pointer transition-colors",
+          "border-2 border-dashed border-border rounded-lg p-6 text-center transition-colors",
           "hover:border-primary",
           dragOver && "border-primary bg-primary/5",
           error && "border-destructive",

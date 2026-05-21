@@ -185,6 +185,13 @@
     background-color: transparent;
   }
 
+  button {
+    cursor: pointer;
+  }
+  button:disabled {
+    cursor: not-allowed;
+  }
+
   ::selection {
     background-color: rgb(24 95 165 / 0.25);
     color: var(--foreground);

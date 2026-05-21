@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { cn } from "@/lib/cn";
+import { useRef, useState } from "react";
 
 interface ContextMenuItem {
   label: string;
@@ -19,22 +20,16 @@ export function ContextMenu({ trigger, items }: ContextMenuProps) {
   const [open, setOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    if (!open) return;
-    const handleMouseDown = (e: MouseEvent) => {
-      if (!containerRef.current?.contains(e.target as Node)) {
-        setOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleMouseDown);
-    return () => document.removeEventListener("mousedown", handleMouseDown);
-  }, [open]);
+  useOutsideClick({
+    ref: containerRef,
+    onOutsideClick: () => setOpen(false),
+  });
 
   return (
     <div ref={containerRef} className="relative inline-flex">
       <div onClick={() => setOpen((v) => !v)}>{trigger}</div>
       {open && (
-        <div className="absolute right-0 top-full mt-1 z-50 min-w-[160px] rounded-lg bg-surface-raised border border-border shadow-lg py-1">
+        <div className="absolute right-0 top-full mt-1 z-50 min-w-40 rounded-lg bg-surface-raised border border-border shadow-lg py-1">
           {items.map((item, i) => (
             <button
               key={i}
@@ -44,7 +39,7 @@ export function ContextMenu({ trigger, items }: ContextMenuProps) {
                 setOpen(false);
               }}
               className={cn(
-                "flex items-center gap-2 w-full px-3 py-1.5 text-sm cursor-pointer transition-colors",
+                "flex items-center gap-2 w-full px-3 py-1.5 text-sm transition-colors",
                 item.variant === "danger"
                   ? "text-destructive hover:bg-destructive/10"
                   : "text-foreground hover:bg-surface",

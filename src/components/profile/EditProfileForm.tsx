@@ -135,7 +135,7 @@ export function EditProfileForm({ user }: { user: UserProfile }) {
           <div className="flex items-center gap-2">
             <label
               htmlFor={FILE_INPUT_ID}
-              className="inline-flex items-center justify-center gap-2 rounded-lg bg-surface-raised hover:bg-border px-3 py-1.5 text-xs font-medium text-foreground cursor-pointer transition-colors"
+              className="inline-flex items-center justify-center gap-2 rounded-lg bg-surface-raised hover:bg-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors"
             >
               <Camera className="w-4 h-4" />
               {file ? "Change" : "Upload Photo"}

@@ -1,20 +1,20 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { MoreHorizontal, MessageSquare, Pencil, Trash2 } from "lucide-react";
-import { useAppDispatch } from "@/store/hooks";
-import { setActiveSession } from "@/store/slices/chatSlice";
-import {
-  useRenameSessionMutation,
-  useDeleteSessionMutation,
-} from "@/store/api";
-import { ContextMenu } from "@/components/ui/ContextMenu";
 import { AlertDialog } from "@/components/ui/AlertDialog";
+import { ContextMenu } from "@/components/ui/ContextMenu";
 import { IconButton } from "@/components/ui/IconButton";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/cn";
+import {
+  useDeleteSessionMutation,
+  useRenameSessionMutation,
+} from "@/store/api";
+import { useAppDispatch } from "@/store/hooks";
+import { setActiveSession } from "@/store/slices/chatSlice";
 import type { ChatSessionInfo } from "@/types/api";
+import { MessageSquare, MoreHorizontal, Pencil, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 function formatRelativeDate(dateStr: string): string {
   const date = new Date(dateStr);
@@ -63,7 +63,7 @@ function SessionRow({ session, isActive }: SessionRowProps) {
     <>
       <div
         className={cn(
-          "group flex items-center gap-2 px-3 py-2 rounded-lg cursor-pointer transition-colors",
+          "group flex items-center gap-2 px-3 py-2 rounded-lg transition-colors",
           isActive
             ? "bg-surface-raised text-foreground"
             : "text-muted hover:bg-surface-raised hover:text-foreground",
@@ -99,7 +99,6 @@ function SessionRow({ session, isActive }: SessionRowProps) {
               aria-label="Session options"
               size="sm"
               className="opacity-0 group-hover:opacity-100"
-              onClick={(e) => e.stopPropagation()}
             />
           }
           items={[

@@ -2,12 +2,13 @@
 
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { Switch } from "@/components/ui/Switch";
+import { useOutsideClick } from "@/hooks/useOutsideClick";
 import { cn } from "@/lib/cn";
 import { useAppSelector } from "@/store/hooks";
 import { ChevronUp, LogOut, Moon, Settings, ShieldCheck } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import Avater from "../ui/Avater";
 
 export function UserMenu() {
@@ -16,22 +17,10 @@ export function UserMenu() {
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const onMouseDown = (e: MouseEvent) => {
-      if (!containerRef.current?.contains(e.target as Node)) setOpen(false);
-    };
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") setOpen(false);
-    };
-    document.addEventListener("mousedown", onMouseDown);
-    document.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("mousedown", onMouseDown);
-      document.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
+  useOutsideClick({
+    ref: containerRef,
+    onOutsideClick: () => setOpen(false),
+  });
 
   const isAdmin = user?.role === "admin";
   const isDark = resolvedTheme === "dark";
@@ -80,7 +69,7 @@ export function UserMenu() {
           aria-haspopup="menu"
           aria-expanded={open}
           className={cn(
-            "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left transition-colors cursor-pointer",
+            "flex items-center gap-3 w-full px-3 py-2.5 rounded-lg text-left transition-colors",
             "hover:bg-surface-raised",
             open && "bg-surface-raised",
           )}
@@ -143,7 +132,7 @@ function MenuItem({
       role="menuitem"
       onClick={onClick}
       className={cn(
-        "flex items-center gap-2.5 w-full px-3 py-2 text-sm transition-colors cursor-pointer",
+        "flex items-center gap-2.5 w-full px-3 py-2 text-sm transition-colors",
         variant === "danger"
           ? "text-destructive hover:bg-destructive/10"
           : "text-foreground hover:bg-surface",

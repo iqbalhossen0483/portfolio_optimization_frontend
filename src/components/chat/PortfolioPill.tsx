@@ -40,7 +40,7 @@ export function PortfolioPill({ jobId, portfolioModel }: PortfolioPillProps) {
     <button
       type="button"
       onClick={handleClick}
-      className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 hover:bg-primary/15 px-3 py-1.5 text-xs text-primary transition-colors cursor-pointer"
+      className="inline-flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/10 hover:bg-primary/15 px-3 py-1.5 text-xs text-primary transition-colors"
     >
       <PieChart className="w-3.5 h-3.5" />
       <span className="font-medium">View portfolio results</span>

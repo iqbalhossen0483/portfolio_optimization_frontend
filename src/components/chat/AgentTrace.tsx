@@ -11,7 +11,7 @@ import {
   Sparkles,
   TrendingUp,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface AgentTraceProps {
   steps: AgentStep[];
@@ -50,18 +50,12 @@ function getMeta(agent: string) {
 }
 
 export function AgentTrace({ steps, isStreaming }: AgentTraceProps) {
-  const [open, setOpen] = useState(isStreaming);
-
-  useEffect(() => {
-    if (isStreaming) setOpen(true);
-    else setOpen(false);
-  }, [isStreaming]);
+  const [userOpen, setUserOpen] = useState(false);
+  const open = isStreaming || userOpen;
 
   if (steps.length === 0 && !isStreaming) return null;
 
-  const summary = isStreaming
-    ? "Working…"
-    : `Show steps (${steps.length})`;
+  const summary = isStreaming ? "Working…" : `Show steps (${steps.length})`;
 
   return (
     <div className="flex gap-3">
@@ -69,10 +63,11 @@ export function AgentTrace({ steps, isStreaming }: AgentTraceProps) {
       <div className="flex-1 min-w-0">
         <button
           type="button"
-          onClick={() => setOpen((v) => !v)}
+          onClick={() => setUserOpen((v) => !v)}
+          disabled={isStreaming}
           className={cn(
             "inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-xs",
-            "text-muted hover:text-foreground hover:bg-surface-raised transition-colors cursor-pointer",
+            "text-muted hover:text-foreground hover:bg-surface-raised transition-colors",
           )}
         >
           {isStreaming ? (

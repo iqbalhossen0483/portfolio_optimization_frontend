@@ -7,7 +7,11 @@ interface PromptSuggestionsProps {
   onSelect: (prompt: string) => void;
 }
 
-const SUGGESTIONS: { icon: React.ElementType; title: string; prompt: string }[] = [
+const SUGGESTIONS: {
+  icon: React.ElementType;
+  title: string;
+  prompt: string;
+}[] = [
   {
     icon: Coins,
     title: "Allocate $1M across ESG-rated equities",
@@ -44,7 +48,7 @@ export function PromptSuggestions({ onSelect }: PromptSuggestionsProps) {
           onClick={() => onSelect(prompt)}
           className={cn(
             "group flex items-start gap-3 text-left rounded-xl border border-border bg-surface",
-            "px-4 py-3 transition-all duration-200 cursor-pointer",
+            "px-4 py-3 transition-all duration-200",
             "hover:border-primary/40 hover:bg-surface-raised hover:-translate-y-px hover:shadow-md",
           )}
         >

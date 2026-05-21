@@ -66,7 +66,7 @@ export function SessionHeader({ sessionId }: SessionHeaderProps) {
           <button
             type="button"
             onClick={beginRename}
-            className="text-sm font-medium text-foreground truncate max-w-full text-left hover:text-primary transition-colors cursor-pointer"
+            className="text-sm font-medium text-foreground truncate max-w-full text-left hover:text-primary transition-colors"
             title="Click to rename"
           >
             {name}
