@@ -1,24 +1,23 @@
 "use client";
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setActiveSession, startStreaming } from "@/store/slices/chatSlice";
-import { setSidebarOpen } from "@/store/slices/uiSlice";
-import { useGetSessionQuery } from "@/store/api";
-import { useStreamingChat } from "@/hooks/useStreamingChat";
+import { ChatInput } from "@/components/chat/ChatInput";
 import { ChatSidebar } from "@/components/chat/ChatSidebar";
 import { MessageThread } from "@/components/chat/MessageThread";
-import { ChatInput } from "@/components/chat/ChatInput";
-import { StatusBar } from "@/components/chat/StatusBar";
-import { ResearchPanel } from "@/components/chat/ResearchPanel";
 import { PortfolioPanel } from "@/components/chat/PortfolioPanel";
-import { Sheet } from "@/components/ui/Sheet";
-import { IconButton } from "@/components/ui/IconButton";
-import { Skeleton } from "@/components/ui/Skeleton";
-import { Menu } from "lucide-react";
+import { SessionHeader } from "@/components/chat/SessionHeader";
 import { BottomSheet } from "@/components/layout/BottomSheet";
+import { IconButton } from "@/components/ui/IconButton";
+import { Sheet } from "@/components/ui/Sheet";
+import { Skeleton } from "@/components/ui/Skeleton";
+import { useStreamingChat } from "@/hooks/useStreamingChat";
+import { useGetSessionQuery } from "@/store/api";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setActiveSession, startStreaming } from "@/store/slices/chatSlice";
+import { setPortfolioSheetOpen, setSidebarOpen } from "@/store/slices/uiSlice";
+import { Menu } from "lucide-react";
+import { useSession } from "next-auth/react";
+import { useParams } from "next/navigation";
+import { useEffect } from "react";
 
 export default function ChatSessionPage() {
   const params = useParams();
@@ -29,10 +28,7 @@ export default function ChatSessionPage() {
     (s) => s.chat,
   );
   const sidebarOpen = useAppSelector((s) => s.ui.sidebarOpen);
-  const [showPortfolioMobile, setShowPortfolioMobile] = [
-    portfolioResult !== null,
-    () => {},
-  ];
+  const portfolioSheetOpen = useAppSelector((s) => s.ui.portfolioSheetOpen);
   const { stream, stop } = useStreamingChat();
   const { data: sessionDetail, isLoading } = useGetSessionQuery(sessionId);
 
@@ -66,12 +62,14 @@ export default function ChatSessionPage() {
             MADRL Portfolio
           </span>
         </div>
-        <StatusBar />
-        <ResearchPanel />
+
+        <SessionHeader sessionId={sessionId} />
 
         {isLoading ? (
           <div className="flex-1 p-6">
-            <Skeleton count={4} className="h-12 mb-3" />
+            <div className="mx-auto w-full max-w-3xl">
+              <Skeleton count={4} className="h-12 mb-3" />
+            </div>
           </div>
         ) : (
           <MessageThread
@@ -94,8 +92,8 @@ export default function ChatSessionPage() {
             <PortfolioPanel />
           </div>
           <BottomSheet
-            open={showPortfolioMobile}
-            onClose={() => {}}
+            open={portfolioSheetOpen}
+            onClose={() => dispatch(setPortfolioSheetOpen(false))}
             className="lg:hidden"
           >
             <PortfolioPanel />

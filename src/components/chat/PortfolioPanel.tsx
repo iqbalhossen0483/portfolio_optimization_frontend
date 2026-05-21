@@ -7,6 +7,7 @@ import { Tooltip } from "@/components/ui/Tooltip";
 import { useAppSelector } from "@/store/hooks";
 import { Blend, GitMerge, Info, Swords } from "lucide-react";
 import { useState } from "react";
+import { PORTFOLIO_PANEL_ID } from "./PortfolioPill";
 import { TopologyTable } from "./TopologyTable";
 
 const topologyTabs = [
@@ -41,7 +42,10 @@ export function PortfolioPanel() {
   );
 
   return (
-    <div className="flex flex-col h-full border-l border-border bg-surface w-full lg:w-[420px] shrink-0">
+    <div
+      id={PORTFOLIO_PANEL_ID}
+      className="flex flex-col h-full border-l border-border bg-surface w-full lg:w-105 shrink-0 rounded-none"
+    >
       <div className="flex items-center gap-2 px-4 py-3 border-b border-border">
         <Badge variant="admin">Model {portfolioResult.portfolio_model}</Badge>
         <Chip label={`Job #${portfolioResult.job_id}`} />

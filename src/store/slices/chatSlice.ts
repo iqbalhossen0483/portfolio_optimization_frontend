@@ -1,15 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { PortfolioResult } from "@/types/api";
 
+export interface AgentStep {
+  agent: string;
+  tool: string | null;
+  label: string;
+  at: number;
+}
+
 interface ChatState {
   activeSessionId: string | null;
   isStreaming: boolean;
   advisorChunks: string;
-  researchChunks: string;
-  researchPanelAgent: string | null;
-  statusLabel: string | null;
-  statusAgent: string | null;
-  statusTool: string | null;
+  agentSteps: AgentStep[];
   portfolioResult: PortfolioResult | null;
   streamError: string | null;
 }
@@ -18,11 +21,7 @@ const initialState: ChatState = {
   activeSessionId: null,
   isStreaming: false,
   advisorChunks: "",
-  researchChunks: "",
-  researchPanelAgent: null,
-  statusLabel: null,
-  statusAgent: null,
-  statusTool: null,
+  agentSteps: [],
   portfolioResult: null,
   streamError: null,
 };
@@ -35,42 +34,22 @@ const chatSlice = createSlice({
       state.activeSessionId = action.payload;
       state.isStreaming = false;
       state.advisorChunks = "";
-      state.researchChunks = "";
-      state.researchPanelAgent = null;
-      state.statusLabel = null;
-      state.statusAgent = null;
-      state.statusTool = null;
+      state.agentSteps = [];
       state.portfolioResult = null;
       state.streamError = null;
     },
     startStreaming(state) {
       state.isStreaming = true;
       state.advisorChunks = "";
-      state.researchChunks = "";
-      state.researchPanelAgent = null;
-      state.statusLabel = null;
-      state.statusAgent = null;
-      state.statusTool = null;
+      state.agentSteps = [];
       state.portfolioResult = null;
       state.streamError = null;
     },
-    setStatus(
-      state,
-      action: PayloadAction<{ label: string; agent: string; tool: string | null }>,
-    ) {
-      state.statusLabel = action.payload.label;
-      state.statusAgent = action.payload.agent;
-      state.statusTool = action.payload.tool;
+    appendAgentStep(state, action: PayloadAction<AgentStep>) {
+      state.agentSteps.push(action.payload);
     },
     appendAdvisorChunk(state, action: PayloadAction<string>) {
       state.advisorChunks += action.payload;
-    },
-    appendResearchChunk(
-      state,
-      action: PayloadAction<{ content: string; agent: string }>,
-    ) {
-      state.researchChunks += action.payload.content;
-      state.researchPanelAgent = action.payload.agent;
     },
     finishStream(
       state,
@@ -82,20 +61,13 @@ const chatSlice = createSlice({
       state.isStreaming = false;
       state.advisorChunks = action.payload.response;
       state.portfolioResult = action.payload.portfolioResult;
-      state.statusLabel = null;
-      state.statusAgent = null;
-      state.statusTool = null;
     },
     streamError(state, action: PayloadAction<string>) {
       state.isStreaming = false;
       state.streamError = action.payload;
-      state.statusLabel = null;
     },
     stopStreaming(state) {
       state.isStreaming = false;
-      state.statusLabel = null;
-      state.statusAgent = null;
-      state.statusTool = null;
     },
   },
 });
@@ -103,9 +75,8 @@ const chatSlice = createSlice({
 export const {
   setActiveSession,
   startStreaming,
-  setStatus,
+  appendAgentStep,
   appendAdvisorChunk,
-  appendResearchChunk,
   finishStream,
   streamError,
   stopStreaming,

@@ -3,9 +3,8 @@
 import { useRef } from "react";
 import { useAppDispatch } from "@/store/hooks";
 import {
-  setStatus,
   appendAdvisorChunk,
-  appendResearchChunk,
+  appendAgentStep,
   finishStream,
   streamError,
   stopStreaming,
@@ -65,23 +64,20 @@ export function useStreamingChat() {
             const event: StreamEvent = JSON.parse(dataLine.slice(6));
             if (event.type === "status") {
               dispatch(
-                setStatus({
-                  label: event.label,
+                appendAgentStep({
                   agent: event.agent,
                   tool: event.tool ?? null,
+                  label: event.label,
+                  at: Date.now(),
                 }),
               );
             } else if (event.type === "text_chunk") {
               if (event.agent === "portfolio_advisor") {
                 dispatch(appendAdvisorChunk(event.content));
-              } else {
-                dispatch(
-                  appendResearchChunk({
-                    content: event.content,
-                    agent: event.agent,
-                  }),
-                );
               }
+              // Sub-agent text chunks are surfaced via the agent trace (status
+              // events from those agents), not as standalone prose — so we drop
+              // their text_chunk payloads here.
             } else if (event.type === "done") {
               dispatch(
                 finishStream({
