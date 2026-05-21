@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@import "highlight.js/styles/github-dark.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -211,31 +210,4 @@
   ::-webkit-scrollbar-thumb:hover {
     background: var(--foreground-muted);
   }
-}
-
-/* ── Markdown prose ──────────────────────────────────────────────────────── */
-.prose-chat p {
-  @apply mb-3;
-}
-.prose-chat code {
-  @apply bg-surface-raised px-1 rounded text-sm;
-}
-.prose-chat pre {
-  @apply bg-surface rounded-lg p-4 overflow-x-auto;
-}
-.prose-chat table {
-  @apply w-full border-collapse;
-}
-.prose-chat th,
-.prose-chat td {
-  @apply border border-border px-3 py-2 text-sm;
-}
-.prose-chat a {
-  @apply text-primary underline;
-}
-.prose-chat ul {
-  @apply list-disc pl-5 mb-3;
-}
-.prose-chat ol {
-  @apply list-decimal pl-5 mb-3;
 }

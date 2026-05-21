@@ -34,7 +34,7 @@ export function AssistantMessage({
       <div className="flex-1 min-w-0">
         <div
           className={cn(
-            "prose-chat text-sm text-foreground",
+            "text-sm text-foreground",
             streaming &&
               "after:content-['▊'] after:animate-pulse after:text-primary after:ml-0.5",
           )}
