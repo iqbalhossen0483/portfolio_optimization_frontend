@@ -1,4 +1,5 @@
 import type {
+  APIResponse,
   AssetListResponse,
   AssetsResponse,
   ChatSessionDetail,
@@ -12,6 +13,7 @@ import type {
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { getSession, signOut } from "next-auth/react";
 import { toast } from "react-toastify";
+import { setUser } from "./slices/userSlice";
 
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_API_BASE_URL,
@@ -57,28 +59,33 @@ export const api = createApi({
   endpoints: (builder) => ({
     // ── Auth ─────────────────────────────────────────────────────────────────
     register: builder.mutation<
-      UserProfile,
+      APIResponse<UserProfile>,
       { email: string; name: string; password: string }
     >({
       query: (body) => ({ url: "/auth/register", method: "POST", body }),
     }),
-    getMe: builder.query<UserProfile, void>({
+    getMe: builder.query<APIResponse<UserProfile>, void>({
       query: () => "/auth/me",
       providesTags: ["Auth"],
+      async onQueryStarted(_arg, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+          if (data?.data) dispatch(setUser(data.data));
+        } catch {
+          // ignore — global 401 handler in baseQueryWithErrorHandling redirects
+        }
+      },
     }),
-    updateMe: builder.mutation<
-      UserProfile,
-      Partial<{ email: string; username: string; password: string }>
-    >({
+    updateMe: builder.mutation<APIResponse<UserProfile>, FormData>({
       query: (body) => ({ url: "/auth/me", method: "PUT", body }),
       invalidatesTags: ["Auth"],
     }),
-    listUsers: builder.query<UserListResponse, void>({
+    listUsers: builder.query<APIResponse<UserListResponse>, void>({
       query: () => "/auth/users",
       providesTags: ["Users"],
     }),
     updateUserRole: builder.mutation<
-      UserProfile,
+      APIResponse<UserProfile>,
       { id: number; role: "admin" | "user" }
     >({
       query: ({ id, role }) => ({

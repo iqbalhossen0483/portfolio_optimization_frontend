@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
+import { useEffect, useRef } from "react";
 
-interface TextAreaProps
-  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   error?: string;
   autoResize?: boolean;
@@ -42,8 +41,11 @@ export function TextArea({
         ref={ref}
         id={inputId}
         className={cn(
-          "w-full rounded-lg border border-border bg-surface-raised px-3 py-2 text-sm text-foreground placeholder:text-subtle transition-colors resize-none max-h-48 overflow-y-auto",
-          error && "border-destructive",
+          "w-full rounded-lg border border-border bg-surface-raised px-3 py-2 text-sm placeholder:text-subtle transition-colors resize-none max-h-48 overflow-y-auto",
+          "focus:outline-none focus:ring-[1.5px]",
+          error
+            ? "border-destructive focus:ring-destructive"
+            : "border-border focus:ring-primary",
           className,
         )}
         {...props}

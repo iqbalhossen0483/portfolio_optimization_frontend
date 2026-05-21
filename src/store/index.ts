@@ -1,19 +1,20 @@
 import { configureStore, type Reducer } from "@reduxjs/toolkit";
 import {
-  persistStore,
-  persistReducer,
   FLUSH,
-  REHYDRATE,
   PAUSE,
   PERSIST,
+  persistReducer,
+  persistStore,
   PURGE,
   REGISTER,
+  REHYDRATE,
 } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import { api } from "./api";
 import chatReducer from "./slices/chatSlice";
 import trainingReducer from "./slices/trainingSlice";
 import uiReducer from "./slices/uiSlice";
+import userReducer from "./slices/userSlice";
 
 const trainingPersistConfig = {
   key: "training",
@@ -25,8 +26,12 @@ export const store = configureStore({
   reducer: {
     [api.reducerPath]: api.reducer,
     chat: chatReducer,
-    training: persistReducer(trainingPersistConfig, trainingReducer) as unknown as Reducer,
+    training: persistReducer(
+      trainingPersistConfig,
+      trainingReducer,
+    ) as unknown as Reducer,
     ui: uiReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

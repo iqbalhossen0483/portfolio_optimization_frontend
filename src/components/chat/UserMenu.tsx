@@ -3,22 +3,15 @@
 import { EditProfileModal } from "@/components/profile/EditProfileModal";
 import { Switch } from "@/components/ui/Switch";
 import { cn } from "@/lib/cn";
+import { useAppSelector } from "@/store/hooks";
 import { ChevronUp, LogOut, Moon, Settings, ShieldCheck } from "lucide-react";
-import { signOut, useSession } from "next-auth/react";
+import { signOut } from "next-auth/react";
 import { useTheme } from "next-themes";
 import { useEffect, useRef, useState } from "react";
-
-function getInitials(name?: string | null, email?: string | null) {
-  const source = (name || email || "User").trim();
-  const parts = source.split(/\s+/).filter(Boolean);
-  if (parts.length >= 2) {
-    return (parts[0][0] + parts[1][0]).toUpperCase();
-  }
-  return source.slice(0, 2).toUpperCase();
-}
+import Avater from "../ui/Avater";
 
 export function UserMenu() {
-  const { data: session } = useSession();
+  const user = useAppSelector((s) => s.user.user);
   const { resolvedTheme, setTheme } = useTheme();
   const [open, setOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -40,7 +33,6 @@ export function UserMenu() {
     };
   }, [open]);
 
-  const user = session?.user;
   const isAdmin = user?.role === "admin";
   const isDark = resolvedTheme === "dark";
 
@@ -93,9 +85,12 @@ export function UserMenu() {
             open && "bg-surface-raised",
           )}
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-fg text-sm font-semibold">
-            {getInitials(user?.name, user?.email)}
-          </div>
+          <Avater
+            profileImage={user?.profile ?? null}
+            userName={user?.name ?? ""}
+            size="sm"
+          />
+
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-1.5">
               <span className="text-sm font-medium text-foreground truncate">

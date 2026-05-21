@@ -44,7 +44,8 @@ export default function RegisterPage() {
       router.push("/chat");
     } catch (err: unknown) {
       const status = (err as { status?: number })?.status;
-      if (status === 409) {
+      const detail = (err as { data?: { detail?: string } })?.data?.detail;
+      if (status === 400 && detail?.toLowerCase().includes("already")) {
         setServerError("Email already taken");
       } else {
         setServerError("Registration failed. Please try again.");

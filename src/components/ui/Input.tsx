@@ -38,7 +38,7 @@ export function Input({
         <input
           id={inputId}
           className={cn(
-            "w-full rounded-lg border bg-surface-raised px-3 py-2 text-sm text-foreground placeholder:text-subtle transition-colors",
+            "w-full rounded-lg border bg-surface-raised px-3 py-2 text-sm placeholder:text-subtle transition-colors",
             "focus:outline-none focus:ring-[1.5px]",
             error
               ? "border-destructive focus:ring-destructive"

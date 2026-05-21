@@ -5,15 +5,13 @@ declare module "next-auth" {
   interface User {
     role: string;
     accessToken: string;
+    is_active?: boolean;
+    about_me?: string | null;
+    profile?: string | null;
+    created_at?: string;
   }
   interface Session {
-    user: {
-      id: string;
-      email: string;
-      name?: string;
-      role: string;
-      accessToken: string;
-    };
+    user: User;
   }
 }
 

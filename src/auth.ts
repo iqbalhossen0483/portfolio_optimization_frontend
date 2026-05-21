@@ -26,12 +26,9 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const data = await res.json();
         const { access_token, user } = data.data;
 
-        console.log("login response", user);
-
         return {
           id: user.id,
           email: user.email,
-          name: user.name,
           role: user.role,
           accessToken: access_token,
         };

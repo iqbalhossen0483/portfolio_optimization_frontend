@@ -7,13 +7,15 @@ export interface UserProfile {
   name: string;
   role: UserRole;
   is_active: boolean;
+  about_me: string | null;
+  profile: string | null;
   created_at: string;
 }
 
-export interface TokenResponse {
+export interface TokenData {
   access_token: string;
   token_type: string;
-  role: UserRole;
+  user: UserProfile;
 }
 
 export interface UserListResponse {
@@ -133,4 +135,10 @@ export interface AssetListResponse {
   items: AssetListItem[];
   next_cursor: string | null;
   has_more: boolean;
+}
+
+export interface APIResponse<T> {
+  success: boolean;
+  message: string;
+  data: T;
 }

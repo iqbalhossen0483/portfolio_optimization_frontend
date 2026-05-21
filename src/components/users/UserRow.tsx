@@ -26,7 +26,7 @@ export function UserRow({ user, currentUserId }: UserRowProps) {
       <tr className="border-t border-border hover:bg-surface-raised/50 transition-colors">
         <td className="px-4 py-3 text-sm text-muted">{user.id}</td>
         <td className="px-4 py-3 text-sm text-foreground">{user.email}</td>
-        <td className="px-4 py-3 text-sm text-foreground">{user.username}</td>
+        <td className="px-4 py-3 text-sm text-foreground">{user.name}</td>
         <td className="px-4 py-3">
           {user.role === "admin" ? (
             <Badge variant="admin">

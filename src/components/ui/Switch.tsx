@@ -45,7 +45,7 @@ export function Switch({
         onClick={() => !disabled && onChange(!checked)}
         className={cn(
           "relative inline-flex shrink-0 items-center rounded-full p-0.5 transition-colors",
-          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background cursor-pointer",
           s.track,
           checked ? "bg-primary" : "bg-border-strong",
           disabled && "opacity-50",
@@ -53,7 +53,7 @@ export function Switch({
       >
         <span
           className={cn(
-            "absolute left-0 flex justify-center items-center transform rounded-full bg-white transition-all duration-300",
+            "absolute left-0 flex justify-center items-center transform rounded-full bg-white transition-all duration-300 ease-in-out",
             checked ? s.translate : "translate-x-0",
             s.thumb,
           )}

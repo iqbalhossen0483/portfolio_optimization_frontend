@@ -2,7 +2,7 @@
 
 import { Modal } from "@/components/ui/Modal";
 import { Skeleton } from "@/components/ui/Skeleton";
-import { useGetMeQuery } from "@/store/api";
+import { useAppSelector } from "@/store/hooks";
 import { EditProfileForm } from "./EditProfileForm";
 
 interface EditProfileModalProps {
@@ -11,14 +11,14 @@ interface EditProfileModalProps {
 }
 
 export function EditProfileModal({ open, onClose }: EditProfileModalProps) {
-  const { data: user, isLoading } = useGetMeQuery(undefined, { skip: !open });
+  const user = useAppSelector((s) => s.user.user);
 
   return (
     <Modal open={open} onClose={onClose} title="Profile Settings" size="md">
-      {isLoading || !user ? (
-        <Skeleton count={4} className="h-12 mb-3" />
-      ) : (
+      {user ? (
         <EditProfileForm user={user} />
+      ) : (
+        <Skeleton count={4} className="h-12 mb-3" />
       )}
     </Modal>
   );

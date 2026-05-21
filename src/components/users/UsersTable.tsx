@@ -13,13 +13,14 @@ export function UsersTable() {
   const [search, setSearch] = useState("");
 
   const filtered = useMemo(() => {
-    if (!data?.users) return [];
+    const users = data?.data?.users;
+    if (!users) return [];
     const q = search.toLowerCase();
-    if (!q) return data.users;
-    return data.users.filter(
+    if (!q) return users;
+    return users.filter(
       (u) =>
         u.email.toLowerCase().includes(q) ||
-        u.username.toLowerCase().includes(q),
+        u.name.toLowerCase().includes(q),
     );
   }, [data, search]);
 
@@ -28,13 +29,13 @@ export function UsersTable() {
       <SearchBar
         value={search}
         onChange={setSearch}
-        placeholder="Search by email or username…"
+        placeholder="Search by email or name…"
       />
       <div className="rounded-xl border border-border overflow-hidden">
         <table className="w-full">
           <thead className="bg-surface-raised">
             <tr>
-              {["ID", "Email", "Username", "Role", "Active", "Created", "Actions"].map(
+              {["ID", "Email", "Name", "Role", "Active", "Created", "Actions"].map(
                 (h) => (
                   <th
                     key={h}
