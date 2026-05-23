@@ -1,5 +1,5 @@
+import type { LogEntry, TrainingMetric } from "@/types/store";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import type { TrainingMetric, LogEntry } from "@/types/store";
 
 const LOG_CAP = 500;
 
@@ -29,7 +29,10 @@ const trainingSlice = createSlice({
       delete state.liveMetrics[action.payload];
       delete state.eventLogs[action.payload];
     },
-    pushMetric(state, action: PayloadAction<{ id: number; metric: TrainingMetric }>) {
+    pushMetric(
+      state,
+      action: PayloadAction<{ id: number; metric: TrainingMetric }>,
+    ) {
       state.liveMetrics[action.payload.id] = action.payload.metric;
     },
     pushLog(state, action: PayloadAction<{ id: number; entry: LogEntry }>) {

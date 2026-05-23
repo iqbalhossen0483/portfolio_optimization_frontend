@@ -20,6 +20,9 @@ function formatLogLine(msg: Record<string, unknown>): string {
   if (msg.type === "warmup") {
     return `[warmup] progress=${msg.progress ?? 0}%`;
   }
+  if (msg.type === "stage") {
+    return `[stage ${msg.status ?? "?"}] ${msg.stage ?? ""}${msg.message ? ` — ${msg.message}` : ""}`;
+  }
   return JSON.stringify(msg);
 }
 
@@ -39,13 +42,23 @@ export default function TrainingMonitorPage() {
   useEffect(() => {
     if (!session?.user?.accessToken) return;
 
-    const ws = new WebSocket(
-      `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/training/${id}?token=${session.user.accessToken}`,
-    );
+    const url = `${process.env.NEXT_PUBLIC_WS_BASE_URL}/ws/training/${id}?token=${session.user.accessToken}`;
+    console.log("[ws] opening", url);
+    const ws = new WebSocket(url);
+
+    ws.onopen = () => console.log("[ws] OPEN — readyState=", ws.readyState);
+    ws.onerror = (e) => console.error("[ws] ERROR", e);
+    ws.onclose = (e) =>
+      console.log("[ws] CLOSED", {
+        code: e.code,
+        reason: e.reason,
+        wasClean: e.wasClean,
+      });
 
     ws.onmessage = (e) => {
       try {
         const msg = JSON.parse(e.data) as Record<string, unknown>;
+        console.log(msg);
 
         if (msg.type === "step") {
           const metric: TrainingMetric = {
@@ -74,6 +87,18 @@ export default function TrainingMonitorPage() {
 
         if (msg.type === "warmup") {
           setWarmupPct(Number(msg.progress ?? 0));
+          dispatch(
+            pushLog({
+              id,
+              entry: {
+                timestamp: new Date().toISOString(),
+                message: formatLogLine(msg),
+              },
+            }),
+          );
+        }
+
+        if (msg.type === "stage") {
           dispatch(
             pushLog({
               id,

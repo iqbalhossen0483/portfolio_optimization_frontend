@@ -10,10 +10,12 @@ import {
   useGetTrainingStatusQuery,
   useStopTrainingMutation,
 } from "@/store/api";
+import { useAppDispatch } from "@/store/hooks";
+import { removeJob } from "@/store/slices/trainingSlice";
 import type { TrainingStatus } from "@/types/api";
 import { StopCircle } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const statusToBadgeVariant: Record<TrainingStatus, BadgeVariant> = {
   queued: "default",
@@ -28,12 +30,19 @@ interface JobRowProps {
 }
 
 export function JobRow({ jobId }: JobRowProps) {
+  const dispatch = useAppDispatch();
   const [showStop, setShowStop] = useState(false);
-  const { data: res } = useGetTrainingStatusQuery(jobId, {
+  const { data: res, error } = useGetTrainingStatusQuery(jobId, {
     pollingInterval: 10_000,
     skip: !jobId,
   });
   const [stopTraining, { isLoading: stopping }] = useStopTrainingMutation();
+
+  // Evict jobs the backend no longer knows about so we stop polling forever.
+  useEffect(() => {
+    const status = (error as { status?: number } | undefined)?.status;
+    if (status === 404) dispatch(removeJob(jobId));
+  }, [error, jobId, dispatch]);
 
   const handleStop = async () => {
     await stopTraining(jobId);

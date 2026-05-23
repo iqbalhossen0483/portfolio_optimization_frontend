@@ -87,9 +87,18 @@ export interface TrainingJobResponse {
   message: string;
 }
 
+export type TrainingStage =
+  | "stage1_ingestion"
+  | "stage2_esg_normalization"
+  | "stage3_normalizer_fit"
+  | "stage4_training"
+  | "completed"
+  | "failed";
+
 export interface TrainingStatusResponse {
   job_id: number;
   status: TrainingStatus;
+  current_stage: TrainingStage | null;
   step: number;
   max_steps: number;
   progress_pct: number;

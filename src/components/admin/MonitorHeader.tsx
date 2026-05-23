@@ -9,7 +9,11 @@ import { Badge, type BadgeVariant } from "@/components/ui/Badge";
 import { ProgressBar } from "@/components/ui/ProgressBar";
 import { AlertDialog } from "@/components/ui/AlertDialog";
 import { Typography } from "@/components/ui/Typography";
-import type { TrainingStatusResponse, TrainingStatus } from "@/types/api";
+import type {
+  TrainingStage,
+  TrainingStatus,
+  TrainingStatusResponse,
+} from "@/types/api";
 
 const statusToBadgeVariant: Record<TrainingStatus, BadgeVariant> = {
   queued: "default",
@@ -17,6 +21,15 @@ const statusToBadgeVariant: Record<TrainingStatus, BadgeVariant> = {
   completed: "success",
   failed: "error",
   stopped: "warning",
+};
+
+const STAGE_LABELS: Record<TrainingStage, string> = {
+  stage1_ingestion: "Ingesting data",
+  stage2_esg_normalization: "Normalising ESG",
+  stage3_normalizer_fit: "Fitting scaler",
+  stage4_training: "Training MASAC",
+  completed: "Complete",
+  failed: "Failed",
 };
 
 interface MonitorHeaderProps {
@@ -46,11 +59,16 @@ export function MonitorHeader({
     <>
       <div className="flex flex-col gap-4 p-6 border-b border-border">
         <div className="flex items-center justify-between flex-wrap gap-3">
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap">
             <Typography variant="h3">Job #{jobId}</Typography>
             <Badge variant={statusToBadgeVariant[status.status]}>
               {status.status}
             </Badge>
+            {status.current_stage && (
+              <Badge variant="default">
+                {STAGE_LABELS[status.current_stage] ?? status.current_stage}
+              </Badge>
+            )}
           </div>
           {status.status === "running" && (
             <Button
