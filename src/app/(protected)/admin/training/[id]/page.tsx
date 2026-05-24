@@ -58,7 +58,6 @@ export default function TrainingMonitorPage() {
     ws.onmessage = (e) => {
       try {
         const msg = JSON.parse(e.data) as Record<string, unknown>;
-        console.log(msg);
 
         if (msg.type === "step") {
           const metric: TrainingMetric = {
