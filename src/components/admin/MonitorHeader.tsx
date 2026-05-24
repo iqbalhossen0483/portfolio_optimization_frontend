@@ -1,19 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import { useStopTrainingMutation } from "@/store/api";
-import { useAppDispatch } from "@/store/hooks";
-import { removeJob } from "@/store/slices/trainingSlice";
-import { Button } from "@/components/ui/Button";
-import { Badge, type BadgeVariant } from "@/components/ui/Badge";
-import { ProgressBar } from "@/components/ui/ProgressBar";
 import { AlertDialog } from "@/components/ui/AlertDialog";
+import { Badge, type BadgeVariant } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { ProgressBar } from "@/components/ui/ProgressBar";
 import { Typography } from "@/components/ui/Typography";
+import { useStopTrainingMutation } from "@/store/api";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { removeJob } from "@/store/slices/trainingSlice";
 import type {
   TrainingStage,
   TrainingStatus,
   TrainingStatusResponse,
 } from "@/types/api";
+import { useState } from "react";
 
 const statusToBadgeVariant: Record<TrainingStatus, BadgeVariant> = {
   queued: "default",
@@ -46,8 +46,18 @@ export function MonitorHeader({
   bestMuEsg,
 }: MonitorHeaderProps) {
   const dispatch = useAppDispatch();
+  const liveMetric = useAppSelector((s) => s.training.liveMetrics[jobId]);
   const [showStop, setShowStop] = useState(false);
   const [stopTraining, { isLoading }] = useStopTrainingMutation();
+
+  // Prefer the live WS metric over the polled status — current_step,
+  // best_sharpe and best_mu_esg in the DB only update between topologies,
+  // so without this the header would stay at "Step 0 — — — —" for the
+  // entire first topology run.
+  const displayStep = liveMetric?.step ?? status.step;
+  const displayPct = Math.min(100, (displayStep / status.max_steps) * 100);
+  const displayBestSharpe = liveMetric?.best_sharpe ?? bestSharpe;
+  const displayBestMuEsg = liveMetric?.best_mu_esg ?? bestMuEsg;
 
   const handleStop = async () => {
     await stopTraining(jobId);
@@ -81,20 +91,22 @@ export function MonitorHeader({
           )}
         </div>
         <ProgressBar
-          value={status.progress_pct}
-          label={`Step ${status.step} / ${status.max_steps}`}
+          value={displayPct}
+          label={`Step ${displayStep.toLocaleString()} / ${status.max_steps.toLocaleString()}`}
           showPercent
         />
         <div className="flex gap-6 text-sm text-muted">
           <span>
             Best Sharpe:{" "}
             <strong className="text-foreground">
-              {bestSharpe?.toFixed(4) ?? "—"}
+              {displayBestSharpe?.toFixed(4) ?? "—"}
             </strong>
           </span>
           <span>
             Best μESG:{" "}
-            <strong className="text-esg">{bestMuEsg?.toFixed(4) ?? "—"}</strong>
+            <strong className="text-esg">
+              {displayBestMuEsg?.toFixed(4) ?? "—"}
+            </strong>
           </span>
           {status.elapsed_seconds !== null && (
             <span>

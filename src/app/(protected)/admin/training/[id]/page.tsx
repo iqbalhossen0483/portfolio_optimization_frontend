@@ -47,7 +47,7 @@ export default function TrainingMonitorPage() {
     const ws = new WebSocket(url);
 
     ws.onopen = () => console.log("[ws] OPEN — readyState=", ws.readyState);
-    ws.onerror = (e) => console.error("[ws] ERROR", e);
+    ws.onerror = (e) => console.log("[ws] ERROR", e);
     ws.onclose = (e) =>
       console.log("[ws] CLOSED", {
         code: e.code,
@@ -58,7 +58,7 @@ export default function TrainingMonitorPage() {
     ws.onmessage = (e) => {
       try {
         const msg = JSON.parse(e.data) as Record<string, unknown>;
-        console.log(msg);
+        console.log(JSON.stringify(msg));
 
         if (msg.type === "step") {
           const metric: TrainingMetric = {
@@ -71,6 +71,10 @@ export default function TrainingMonitorPage() {
             loss_actor: Number(msg.loss_actor ?? 0),
             loss_critic: Number(msg.loss_critic ?? 0),
             alpha_t: Number(msg.alpha_t ?? 0),
+            best_sharpe:
+              msg.best_sharpe == null ? null : Number(msg.best_sharpe),
+            best_mu_esg:
+              msg.best_mu_esg == null ? null : Number(msg.best_mu_esg),
           };
           dispatch(pushMetric({ id, metric }));
           dispatch(

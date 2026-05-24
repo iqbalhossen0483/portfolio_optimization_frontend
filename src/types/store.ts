@@ -8,6 +8,8 @@ export interface TrainingMetric {
   loss_actor: number;
   loss_critic: number;
   alpha_t: number;
+  best_sharpe: number | null;
+  best_mu_esg: number | null;
 }
 
 export interface LogEntry {
