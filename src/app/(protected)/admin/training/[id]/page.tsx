@@ -58,7 +58,7 @@ export default function TrainingMonitorPage() {
     ws.onmessage = (e) => {
       try {
         const msg = JSON.parse(e.data) as Record<string, unknown>;
-        console.log(JSON.stringify(msg));
+        console.log(msg);
 
         if (msg.type === "step") {
           const metric: TrainingMetric = {
@@ -81,7 +81,9 @@ export default function TrainingMonitorPage() {
             pushLog({
               id,
               entry: {
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toLocaleString("sv-SE", {
+                  timeZone: "Asia/Dhaka",
+                }),
                 message: formatLogLine(msg),
               },
             }),
@@ -95,7 +97,9 @@ export default function TrainingMonitorPage() {
             pushLog({
               id,
               entry: {
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toLocaleString("sv-SE", {
+                  timeZone: "Asia/Dhaka",
+                }),
                 message: formatLogLine(msg),
               },
             }),
@@ -107,7 +111,10 @@ export default function TrainingMonitorPage() {
             pushLog({
               id,
               entry: {
-                timestamp: new Date().toISOString(),
+                timestamp: new Date().toLocaleString("sv-SE", {
+                  timeZone: "Asia/Dhaka",
+                  hour12: true,
+                }),
                 message: formatLogLine(msg),
               },
             }),
